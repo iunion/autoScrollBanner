@@ -1,0 +1,4 @@
+autoScrollBanner
+================
+
+auto scroll banner
