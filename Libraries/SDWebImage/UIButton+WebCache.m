@@ -226,76 +226,24 @@
 // SDImageCache中有数据
 - (void)webImageManager:(SDWebImageManager *)imageManager didFinishWithImage:(UIImage *)image forURL:(NSURL *)url userInfo:(NSDictionary *)info
 {
-    NSString *fileName = [imageManager getCachePathForKey:[url absoluteString]];
-	NSData* imageData = [NSData dataWithContentsOfFile:fileName];
-    
-    UIImage *sImage = nil;
-    
-    if ([imageData sd_isGIF])
-    {
-        sImage = [UIImage sd_animatedGIFWithData:imageData];
-    }
-    
-    if (!sImage)
-    {
-        sImage = image;
-    }
-
     NSString *type = [info valueForKey:@"type"];
     if (type/* && [type isEqualToString:@"background"]*/)
     {
-        [self setBackgroundImage:sImage forState:UIControlStateNormal];
-        [self setBackgroundImage:sImage forState:UIControlStateSelected];
-        [self setBackgroundImage:sImage forState:UIControlStateHighlighted];
+        [self setBackgroundImage:image forState:UIControlStateNormal];
+        [self setBackgroundImage:image forState:UIControlStateSelected];
+        [self setBackgroundImage:image forState:UIControlStateHighlighted];
     }
     else
     {
         if ([info isNotEmpty])
         {
-            [self removeAvtivityViewWithImage:sImage UserInfo:info];
+            [self removeAvtivityViewWithImage:image UserInfo:info];
         }
         else
         {
-            [self setImage:sImage forState:UIControlStateNormal];
-            [self setImage:sImage forState:UIControlStateSelected];
-            [self setImage:sImage forState:UIControlStateHighlighted];
-        }
-    }
-}
-
-// SDImageCache中无数据，SDWebImageDownloader下载获得
-- (void)webImageManager:(SDWebImageManager *)imageManager ImageData:(NSData *)imageData didFinishWithImage:(UIImage *)image forURL:(NSURL *)url userInfo:(NSDictionary *)info
-{
-    UIImage *sImage = nil;
-    
-    if ([imageData sd_isGIF])
-    {
-        sImage = [UIImage sd_animatedGIFWithData:imageData];
-    }
-    
-    if (!sImage)
-    {
-        sImage = image;
-    }
-    
-    NSString *type = [info valueForKey:@"type"];
-    if (type/* && [type isEqualToString:@"background"]*/)
-    {
-        [self setBackgroundImage:sImage forState:UIControlStateNormal];
-        [self setBackgroundImage:sImage forState:UIControlStateSelected];
-        [self setBackgroundImage:sImage forState:UIControlStateHighlighted];
-    }
-    else
-    {
-        if ([info isNotEmpty])
-        {
-            [self removeAvtivityViewWithImage:sImage UserInfo:info];
-        }
-        else
-        {
-            [self setImage:sImage forState:UIControlStateNormal];
-            [self setImage:sImage forState:UIControlStateSelected];
-            [self setImage:sImage forState:UIControlStateHighlighted];
+            [self setImage:image forState:UIControlStateNormal];
+            [self setImage:image forState:UIControlStateSelected];
+            [self setImage:image forState:UIControlStateHighlighted];
         }
     }
 }

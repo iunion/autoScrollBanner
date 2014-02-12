@@ -52,15 +52,4 @@
 - (void)webImageManager:(SDWebImageManager *)imageManager didFailWithError:(NSError *)error forURL:(NSURL *)url;
 - (void)webImageManager:(SDWebImageManager *)imageManager didFailWithError:(NSError *)error;
 
-
-// under add by DJ
-
-
-// 可支持动态图片 最近工作忙简单改了一些，有兴趣的可以直接修改SDWebImage内部算法返回UIImage数组来实现UIImageView显示动态图
-// SDImageCache中有数据
-// 使用原函数
-// - (void)webImageManager:(SDWebImageManager *)imageManager didFinishWithImage:(UIImage *)image forURL:(NSURL *)url userInfo:(NSDictionary *)info;
-// SDImageCache中无数据，SDWebImageDownloader下载获得
-- (void)webImageManager:(SDWebImageManager *)imageManager ImageData:(NSData *)imageData didFinishWithImage:(UIImage *)image forURL:(NSURL *)url userInfo:(NSDictionary *)info;
-
 @end

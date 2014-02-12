@@ -130,64 +130,10 @@
 //}
 
 
-// SDImageCache中有数据
 - (void)webImageManager:(SDWebImageManager *)imageManager didFinishWithImage:(UIImage *)image forURL:(NSURL *)url userInfo:(NSDictionary *)info
 {
-    NSString *fileName = [imageManager getCachePathForKey:[url absoluteString]];
-	NSData* imageData = [NSData dataWithContentsOfFile:fileName];
-    
-    UIImage *sImage = nil;
-    
-    if ([imageData sd_isGIF])
-    {
-        sImage = [UIImage sd_animatedGIFWithData:imageData];
-    }
-    
-    if (!sImage)
-    {
-        sImage = image;
-    }
+    self.image = image;
 
-    if (sImage)
-    {
-        if ([self isAnimating])
-        {
-            [self stopAnimating];
-        }
-        
-        self.image = sImage;
-    }
-    
-    [self removeAvtivityViewWithUserInfo:info];
-    
-    [self setNeedsLayout];
-}
-
-// SDImageCache中无数据，SDWebImageDownloader下载获得
-- (void)webImageManager:(SDWebImageManager *)imageManager ImageData:(NSData *)imageData didFinishWithImage:(UIImage *)image forURL:(NSURL *)url userInfo:(NSDictionary *)info
-{
-    UIImage *sImage = nil;
-    
-    if ([imageData sd_isGIF])
-    {
-        sImage = [UIImage sd_animatedGIFWithData:imageData];
-    }
-    
-    if (!sImage)
-    {
-        sImage = image;
-    }
-    
-    if (!sImage)
-    {
-        if ([self isAnimating])
-        {
-            [self stopAnimating];
-        }
-        
-        self.image = sImage;
-    }
-    
     [self removeAvtivityViewWithUserInfo:info];
     
     [self setNeedsLayout];
@@ -229,4 +175,5 @@
         }
     }
 }
+
 @end

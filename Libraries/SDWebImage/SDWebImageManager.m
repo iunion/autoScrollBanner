@@ -191,6 +191,7 @@ static SDWebImageManager *instance;
     SDWebImageFailureBlock failureCopy = [failure copy];
     NSDictionary *info = nil;
     
+    // add by DJ
     if (progress)
     {
         SDWebImageProgressBlock progressCopy = [progress copy];
@@ -308,6 +309,23 @@ static SDWebImageManager *instance;
         return;
     }
 
+    // add by DJ
+    NSString *fileName = [self getCachePathForKey:[url absoluteString]];
+    NSData *imageData = [NSData dataWithContentsOfFile:fileName];
+
+    UIImage *sImage = nil;
+
+    if ([imageData sd_isGIF])
+    {
+        sImage = [UIImage sd_animatedGIFWithData:imageData];
+    }
+
+    if (!sImage)
+    {
+        sImage = image;
+    }
+    image = sImage;
+
     if ([delegate respondsToSelector:@selector(webImageManager:didFinishWithImage:)])
     {
         [delegate performSelector:@selector(webImageManager:didFinishWithImage:) withObject:self withObject:image];
@@ -328,24 +346,8 @@ static SDWebImageManager *instance;
 #if NS_BLOCKS_AVAILABLE
     if ([info objectForKey:@"success"])
     {
-        // add by DJ
-        NSString *fileName = [self getCachePathForKey:[url absoluteString]];
-        NSData* imageData = [NSData dataWithContentsOfFile:fileName];
-
-        UIImage *sImage = nil;
-
-        if ([imageData sd_isGIF])
-        {
-            sImage = [UIImage sd_animatedGIFWithData:imageData];
-        }
-
-        if (!sImage)
-        {
-            sImage = image;
-        }
-
         SDWebImageSuccessBlock success = [info objectForKey:@"success"];
-        success(sImage, YES);
+        success(image, YES);
     }
 #endif
 
@@ -536,9 +538,27 @@ static SDWebImageManager *instance;
             NSDictionary *info = [downloadInfo objectAtIndex:i];
             SDWIRetain(info);
             SDWIAutorelease(info);
-            
-            if (image)
+
+            // add by DJ
+            NSData *imageData = downloader.imageData;
+
+            UIImage *sImage = nil;
+
+            if ([imageData sd_isGIF])
             {
+                sImage = [UIImage sd_animatedGIFWithData:imageData];
+            }
+
+            if (!sImage)
+            {
+                sImage = image;
+            }
+
+            //if (image)
+            if (sImage)
+            {
+                image = sImage;
+
                 if ([delegate respondsToSelector:@selector(webImageManager:didFinishWithImage:)])
                 {
                     [delegate performSelector:@selector(webImageManager:didFinishWithImage:) withObject:self withObject:image];
@@ -556,39 +576,11 @@ static SDWebImageManager *instance;
                     }
                     ((void ( *)(id, SEL, id, id, id, id))objc_msgSend)(delegate, @selector(webImageManager:didFinishWithImage:forURL:userInfo:), self, image, downloader.url, userInfo);
                 }
-
-// add by DJ
-                if ([delegate respondsToSelector:@selector(webImageManager:ImageData:didFinishWithImage:forURL:userInfo:)])
-                {
-                    NSDictionary *userInfo = [info objectForKey:@"userInfo"];
-                    if ([userInfo isKindOfClass:NSNull.class])
-                    {
-                        userInfo = nil;
-                    }
-                    ((void ( *)(id, SEL, id, id, id, id, id))objc_msgSend)(delegate, @selector(webImageManager:ImageData:didFinishWithImage:forURL:userInfo:), self, downloader.imageData, image, downloader.url, userInfo);
-                }
-// end by DJ
-
 #if NS_BLOCKS_AVAILABLE
                 if ([info objectForKey:@"success"])
                 {
-                    // add by DJ
-                    NSData* imageData = downloader.imageData;
-
-                    UIImage *sImage = nil;
-
-                    if ([imageData sd_isGIF])
-                    {
-                        sImage = [UIImage sd_animatedGIFWithData:imageData];
-                    }
-                    
-                    if (!sImage)
-                    {
-                        sImage = image;
-                    }
-                    
                     SDWebImageSuccessBlock success = [info objectForKey:@"success"];
-                    success(sImage, NO);
+                    success(image, NO);
                 }
 #endif
             }
