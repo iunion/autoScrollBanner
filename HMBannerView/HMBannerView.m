@@ -123,6 +123,8 @@
     totalPage = imagesArray.count;
     totalCount = totalPage;
     curPage = 1;
+    self.pageControl.numberOfPages = totalPage;
+    self.pageControl.currentPage = 0;
 
     [self startDownloadImage];
 }
