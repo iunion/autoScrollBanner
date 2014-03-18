@@ -576,6 +576,7 @@
 				04062BAE18A9C52E000D5474 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		04062BAF18A9C52E000D5474 /* Build configuration list for PBXNativeTarget "autoScrollBannerDemoTests" */ = {
 			isa = XCConfigurationList;
@@ -584,6 +585,7 @@
 				04062BB118A9C52E000D5474 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
