@@ -9,19 +9,21 @@
 #import <UIKit/UIKit.h>
 #import "UIImageView+WebCache.h"
 
-typedef enum {
+typedef NS_ENUM(NSInteger, BannerViewScrollDirection)
+{
     // 水平滚动
     ScrollDirectionLandscape,
     // 垂直滚动
     ScrollDirectionPortait
-} BannerViewScrollDirection;
+};
 
-typedef enum {
+typedef NS_ENUM(NSInteger, BannerViewPageStyle)
+{
     PageStyle_None,
     PageStyle_Left,
     PageStyle_Right,
     PageStyle_Middle
-} BannerViewPageStyle;
+};
 
 
 @protocol HMBannerViewDelegate;
@@ -35,8 +37,8 @@ typedef enum {
     UIScrollView *scrollView;
     UIButton *BannerCloseButton;
 
-    int totalPage;  
-    int curPage;
+    NSInteger totalPage;
+    NSInteger curPage;
 }
 
 @property (nonatomic, assign) id <HMBannerViewDelegate> delegate;
@@ -67,7 +69,7 @@ typedef enum {
 - (void)imageCachedDidFinish:(HMBannerView *)bannerView;
 
 @optional
-- (void)bannerView:(HMBannerView *)bannerView didSelectImageView:(int)index withData:(NSDictionary *)bannerData;
+- (void)bannerView:(HMBannerView *)bannerView didSelectImageView:(NSInteger)index withData:(NSDictionary *)bannerData;
 
 - (void)bannerViewdidClosed:(HMBannerView *)bannerView;
 

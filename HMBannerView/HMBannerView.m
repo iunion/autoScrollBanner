@@ -20,8 +20,8 @@
 
 - (void)refreshScrollView;
 
-- (int)getPageIndex:(NSInteger)index;
-- (NSArray *)getDisplayImagesWithPageIndex:(int)pageIndex;
+- (NSInteger)getPageIndex:(NSInteger)index;
+- (NSArray *)getDisplayImagesWithPageIndex:(NSInteger)pageIndex;
 
 
 @end
@@ -82,7 +82,7 @@
                                                 scrollView.frame.size.height * 3);
         }
 
-        for (int i = 0; i < 3; i++)
+        for (NSInteger i = 0; i < 3; i++)
         {
             UIImageView *imageView = [[UIImageView alloc] initWithFrame:scrollView.bounds];
             imageView.userInteractionEnabled = YES;
@@ -193,6 +193,8 @@
 
 - (void)closeBanner
 {
+    [self stopRolling];
+
     if ([self.delegate respondsToSelector:@selector(bannerViewdidClosed:)])
     {
         [self.delegate bannerViewdidClosed:self];
@@ -211,7 +213,7 @@
 
     [[SDWebImageManager sharedManager] cancelForDelegate:self];
 
-    for (int i=0; i<self.imagesArray.count; ++i)
+    for (NSInteger i=0; i<self.imagesArray.count; ++i)
     {
         NSDictionary *dic = [self.imagesArray objectAtIndex:i];
         NSString *url = [dic objectForKey:@"img_url"];
@@ -224,7 +226,7 @@
 {
     NSArray *curimageUrls = [self getDisplayImagesWithPageIndex:curPage];
 
-    for (int i = 0; i < 3; i++)
+    for (NSInteger i = 0; i < 3; i++)
     {
         UIImageView *imageView = (UIImageView *)[scrollView viewWithTag:i+1];
         NSDictionary *dic = [curimageUrls objectAtIndex:i];
@@ -235,21 +237,21 @@
     // 水平滚动
     if (scrollDirection == ScrollDirectionLandscape)
     {
-        [scrollView setContentOffset:CGPointMake(scrollView.frame.size.width, 0)];
+        scrollView.contentOffset = CGPointMake(scrollView.frame.size.width, 0);
     }
     // 垂直滚动
     else if (scrollDirection == ScrollDirectionPortait)
     {
-        [scrollView setContentOffset:CGPointMake(0, scrollView.frame.size.height)];
+        scrollView.contentOffset = CGPointMake(0, scrollView.frame.size.height);
     }
 
     self.pageControl.currentPage = curPage-1;
 }
 
-- (NSArray *)getDisplayImagesWithPageIndex:(int)page
+- (NSArray *)getDisplayImagesWithPageIndex:(NSInteger)page
 {
-    int pre = [self getPageIndex:curPage-1];
-    int last = [self getPageIndex:curPage+1];
+    NSInteger pre = [self getPageIndex:curPage-1];
+    NSInteger last = [self getPageIndex:curPage+1];
     
     NSMutableArray *images = [NSMutableArray arrayWithCapacity:0];
     
@@ -260,7 +262,7 @@
     return images;
 }
 
-- (int)getPageIndex:(NSInteger)index
+- (NSInteger)getPageIndex:(NSInteger)index
 {
     // value＝1为第一张，value = 0为前面一张
     if (index == 0)
@@ -282,8 +284,8 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)aScrollView
 {
-    int x = aScrollView.contentOffset.x;
-    int y = aScrollView.contentOffset.y;
+    NSInteger x = aScrollView.contentOffset.x;
+    NSInteger y = aScrollView.contentOffset.y;
     //NSLog(@"did  x=%d  y=%d", x, y);
 
     //取消已加入的延迟线程
@@ -333,20 +335,20 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)aScrollView
 {
-    //int x = aScrollView.contentOffset.x;
-    //int y = aScrollView.contentOffset.y;
+    //NSInteger x = aScrollView.contentOffset.x;
+    //NSInteger y = aScrollView.contentOffset.y;
     
     //NSLog(@"--end  x=%d  y=%d", x, y);
     
     // 水平滚动
     if (scrollDirection == ScrollDirectionLandscape)
     {
-        [scrollView setContentOffset:CGPointMake(scrollView.frame.size.width, 0) animated:YES];
+        scrollView.contentOffset = CGPointMake(scrollView.frame.size.width, 0);
     }
     // 垂直滚动
     else if (scrollDirection == ScrollDirectionPortait)
     {
-        [scrollView setContentOffset:CGPointMake(0, scrollView.frame.size.height) animated:YES];
+        scrollView.contentOffset = CGPointMake(0, scrollView.frame.size.height);
     }
 
     if (self.enableRolling)

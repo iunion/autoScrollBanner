@@ -94,7 +94,7 @@
     }
 }
 
-- (void)bannerView:(HMBannerView *)bannerView didSelectImageView:(int)index withData:(NSDictionary *)bannerData
+- (void)bannerView:(HMBannerView *)bannerView didSelectImageView:(NSInteger)index withData:(NSDictionary *)bannerData
 {
     
 }

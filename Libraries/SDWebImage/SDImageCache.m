@@ -389,11 +389,15 @@ static NSInteger cacheMaxCacheAge = 60*60*24*7; // 1 week
 {
     int count = 0;
     NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:diskCachePath];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
+    
     for (NSString *fileName in fileEnumerator)
     {
         count += 1;
     }
     
+#pragma clang diagnostic pop
     return count;
 }
 
