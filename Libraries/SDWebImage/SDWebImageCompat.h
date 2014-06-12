@@ -8,6 +8,8 @@
  */
 
 #import <TargetConditionals.h>
+// add by DJ
+#import "UIImage+MultiFormat.h"
 
 #if !TARGET_OS_IPHONE
 #import <AppKit/AppKit.h>
@@ -139,8 +141,9 @@ NS_INLINE UIImage *SDScaledImageForPath(NSString *path, NSObject *imageOrData)
         {
             return nil;
         }
+        image = [UIImage sd_imageWithData:(NSData *)imageOrData];
 // end by DJ
-        image = [[UIImage alloc] initWithData:(NSData *)imageOrData];
+        //image = [[UIImage alloc] initWithData:(NSData *)imageOrData];
     }
     else if ([imageOrData isKindOfClass:[UIImage class]])
     {

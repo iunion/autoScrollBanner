@@ -8,6 +8,10 @@
 
 #import "HMBannerView.h"
 
+
+#define Banner_StartTag     1000
+
+
 @interface HMBannerView ()
 {
     // 下载统计
@@ -36,6 +40,7 @@
 
 - (void)dealloc
 {
+    delegate = nil;
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(rollingScrollAction) object:nil];
     [[SDWebImageManager sharedManager] cancelForDelegate:self];
 
@@ -86,7 +91,7 @@
         {
             UIImageView *imageView = [[UIImageView alloc] initWithFrame:scrollView.bounds];
             imageView.userInteractionEnabled = YES;
-            imageView.tag = i+1;
+            imageView.tag = Banner_StartTag+i;
 
             UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
             [imageView addGestureRecognizer:singleTap];
@@ -118,6 +123,11 @@
 
 - (void)reloadBannerWithData:(NSArray *)images
 {
+    if (self.enableRolling)
+    {
+        [self stopRolling];
+    }
+    
     self.imagesArray = [[NSArray alloc] initWithArray:images];
 
     totalPage = imagesArray.count;
@@ -218,7 +228,10 @@
         NSDictionary *dic = [self.imagesArray objectAtIndex:i];
         NSString *url = [dic objectForKey:@"img_url"];
 
-        [[SDWebImageManager sharedManager] downloadWithURL:[NSURL URLWithString:url] delegate:self];
+        if ([url isNotEmpty])
+        {
+            [[SDWebImageManager sharedManager] downloadWithURL:[NSURL URLWithString:url] delegate:self];
+        }
     }
 }
 
@@ -228,10 +241,13 @@
 
     for (NSInteger i = 0; i < 3; i++)
     {
-        UIImageView *imageView = (UIImageView *)[scrollView viewWithTag:i+1];
+        UIImageView *imageView = (UIImageView *)[scrollView viewWithTag:Banner_StartTag+i];
         NSDictionary *dic = [curimageUrls objectAtIndex:i];
         NSString *url = [dic objectForKey:@"img_url"];
-        [imageView setImageWithURL:[NSURL URLWithString:url] placeholderImage:nil];
+        if (imageView && [imageView isKindOfClass:[UIImageView class]] && [url isNotEmpty])
+        {
+            [imageView setImageWithURL:[NSURL URLWithString:url] placeholderImage:nil];
+        }
     }
 
     // 水平滚动

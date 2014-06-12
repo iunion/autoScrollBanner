@@ -10,10 +10,6 @@
 #import "SDImageCache.h"
 #import "SDWebImageDownloader.h"
 #import <objc/message.h>
-// add by DJ
-#import <CommonCrypto/CommonDigest.h>
-#import "UIImage+GIF.h"
-
 
 static SDWebImageManager *instance;
 
@@ -62,7 +58,7 @@ static SDWebImageManager *instance;
 }
 
 // add by DJ
-+ (void)clearImage
++ (void)clearImageDisk
 {
     [[SDImageCache sharedImageCache] clearDisk];
 }
@@ -309,23 +305,6 @@ static SDWebImageManager *instance;
         return;
     }
 
-    // add by DJ
-    NSString *fileName = [self getCachePathForKey:[url absoluteString]];
-    NSData *imageData = [NSData dataWithContentsOfFile:fileName];
-
-    UIImage *sImage = nil;
-
-    if ([imageData sd_isGIF])
-    {
-        sImage = [UIImage sd_animatedGIFWithData:imageData];
-    }
-
-    if (!sImage)
-    {
-        sImage = image;
-    }
-    image = sImage;
-
     if ([delegate respondsToSelector:@selector(webImageManager:didFinishWithImage:)])
     {
         [delegate performSelector:@selector(webImageManager:didFinishWithImage:) withObject:self withObject:image];
@@ -539,26 +518,8 @@ static SDWebImageManager *instance;
             SDWIRetain(info);
             SDWIAutorelease(info);
 
-            // add by DJ
-            NSData *imageData = downloader.imageData;
-
-            UIImage *sImage = nil;
-
-            if ([imageData sd_isGIF])
+            if (image)
             {
-                sImage = [UIImage sd_animatedGIFWithData:imageData];
-            }
-
-            if (!sImage)
-            {
-                sImage = image;
-            }
-
-            //if (image)
-            if (sImage)
-            {
-                image = sImage;
-
                 if ([delegate respondsToSelector:@selector(webImageManager:didFinishWithImage:)])
                 {
                     [delegate performSelector:@selector(webImageManager:didFinishWithImage:) withObject:self withObject:image];
@@ -700,30 +661,5 @@ static SDWebImageManager *instance;
     [downloaderForURL removeObjectForKey:downloader.url];
     SDWIRelease(downloader);
 }
-
-// add by DJ
-//- (NSString *)cachePathForKey:(NSString *)key
-//{
-//    const char *str = [key UTF8String];
-//    unsigned char r[CC_MD5_DIGEST_LENGTH];
-//    CC_MD5(str, (CC_LONG)strlen(str), r);
-//    NSString *filename = [NSString stringWithFormat:@"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
-//                          r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]];
-//    
-//    return [diskCachePath stringByAppendingPathComponent:filename];
-//}
-
-- (NSString *)getCachePathForKey:(NSString *)urlStr
-{
-    const char *str = [urlStr UTF8String];
-    unsigned char r[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(str, (CC_LONG)strlen(str), r);
-    NSString *filename = [NSString stringWithFormat:@"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x", r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]];
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    NSString *diskCachePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"ImageCache"];
-    
-    return [diskCachePath stringByAppendingPathComponent:filename];
-}
-// end by DJ
 
 @end

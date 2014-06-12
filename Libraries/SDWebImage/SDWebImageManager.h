@@ -85,7 +85,7 @@ typedef NSString *(^CacheKeyFilter)(NSURL *url);
  */
 + (id)sharedManager;
 // add by DJ
-+ (void)clearImage;
++ (void)clearImageDisk;
 
 - (UIImage *)imageWithURL:(NSURL *)url __attribute__ ((deprecated));
 
@@ -173,7 +173,7 @@ typedef NSString *(^CacheKeyFilter)(NSURL *url);
 
 // add by DJ
 // 获取图片存储文件全路径名
-- (NSString *)getCachePathForKey:(NSString *)urlStr;
+//- (NSString *)getCachePathForKey:(NSString *)urlStr;
 // add end
 
 @end
