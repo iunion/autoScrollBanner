@@ -187,6 +187,7 @@
             [BannerCloseButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
             [BannerCloseButton addTarget:self action:@selector(closeBanner) forControlEvents:UIControlEventTouchUpInside];
             [BannerCloseButton setImage:[UIImage imageNamed:@"banner_close"] forState:UIControlStateNormal];
+            BannerCloseButton.exclusiveTouch = YES;
             [self addSubview:BannerCloseButton];
         }
 
@@ -369,7 +370,9 @@
 
     if (self.enableRolling)
     {
-        [self performSelector:@selector(rollingScrollAction) withObject:nil afterDelay:self.rollingDelayTime];
+        //NSLog(@"scrollViewDidEndDecelerating performSelector");
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(rollingScrollAction) object:nil];
+        [self performSelector:@selector(rollingScrollAction) withObject:nil afterDelay:self.rollingDelayTime inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
     }
 }
 
@@ -414,12 +417,17 @@
         }
         //NSLog(@"%@", NSStringFromCGPoint(scrollView.contentOffset));
     } completion:^(BOOL finished) {
-        curPage = [self getPageIndex:curPage+1];
-        [self refreshScrollView];
-
-        if (self.enableRolling)
+        if (finished)
         {
-            [self performSelector:@selector(rollingScrollAction) withObject:nil afterDelay:self.rollingDelayTime];
+            curPage = [self getPageIndex:curPage+1];
+            [self refreshScrollView];
+
+            if (self.enableRolling)
+            {
+//                NSLog(@"rollingScrollAction performSelector");
+                [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(rollingScrollAction) object:nil];
+                [self performSelector:@selector(rollingScrollAction) withObject:nil afterDelay:self.rollingDelayTime inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+            }
         }
     }];
 }
